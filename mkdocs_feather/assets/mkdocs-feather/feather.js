@@ -467,12 +467,20 @@ function setupExample(feather, element) {
     },
 
     clearOutput() {
-      $(this.editor).find(".output-wrapper").hide();
+      $(this.editor).find(".output-wrapper .output").hide();
       $(this.editor).find(".output").text("");
 
       for (var i=0; i < this.outputHooks.length; i++) {
         this.outputHooks[i]("");
       }
+    },
+
+    showSpinner() {
+      $(this.editor).find(".output-wrapper .spinner").show();
+    },
+
+    hideSpinner() {
+      $(this.editor).find(".output-wrapper .spinner").hide();
     },
 
     // extra run buttons specified in course.js
