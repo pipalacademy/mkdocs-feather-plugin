@@ -37,8 +37,8 @@ const CODEMIRROR_OPTIONS = {
   extraKeys: {
     Tab: (cm) => {
       cm.somethingSelected()
-      ? cm.execCommand('indentMore')
-      : cm.execCommand('insertSoftTab');
+        ? cm.execCommand('indentMore')
+        : cm.execCommand('insertSoftTab');
     }
   }
 }
@@ -116,7 +116,7 @@ function setupExample(feather, element) {
     },
 
     getBuffer(name) {
-      for (var i=0; i<this.buffers.length; i++) {
+      for (var i = 0; i < this.buffers.length; i++) {
         if (this.buffers[i].name == name)
           return this.buffers[i];
       }
@@ -130,7 +130,7 @@ function setupExample(feather, element) {
 
     newBuffer(name, text, mode) {
       var doc = CodeMirror.Doc(text, mode);
-      var buf = {name: name, doc: doc}
+      var buf = { name: name, doc: doc }
       this.buffers.push(buf);
 
       this.addFileTab(name);
@@ -142,9 +142,9 @@ function setupExample(feather, element) {
       var tokens = text.split(/=== (.*)/);
 
       // skip the first empty token and move in steps of two
-      for (var i=1; i<tokens.length; i+=2) {
+      for (var i = 1; i < tokens.length; i += 2) {
         var filename = tokens[i];
-        var code = tokens[i+1].trim();
+        var code = tokens[i + 1].trim();
         var mode = this.guessFileMode(filename);
         this.newBuffer(filename, code, mode);
       }
@@ -194,10 +194,10 @@ function setupExample(feather, element) {
       var parent = $(this.editor).find(".filenames");
 
       $("<button></button>")
-      .addClass("file-link")
-      .text(name)
-      .data("name", name)
-      .appendTo(parent);
+        .addClass("file-link")
+        .text(name)
+        .data("name", name)
+        .appendTo(parent);
     },
 
     triggerEvent(name) {
@@ -210,7 +210,7 @@ function setupExample(feather, element) {
       var lang = this.findLanguage();
       var id = $(this.element).data("id") || "default";
       var hasOptions = $(`#livecode-options-${id}`).length > 0;
-      var options =  hasOptions ? $(`#livecode-options-${id}`).data() : {};
+      var options = hasOptions ? $(`#livecode-options-${id}`).data() : {};
 
       this.options = {
         ...this.options,
@@ -269,7 +269,7 @@ function setupExample(feather, element) {
       var textarea = $(this.editor).find("textarea.code")[0];
 
       var mode = this.getMode();
-      var options = {...CODEMIRROR_OPTIONS, mode: mode};
+      var options = { ...CODEMIRROR_OPTIONS, mode: mode };
       console.log("codemirror", options);
       this.codemirror = CodeMirror.fromTextArea(textarea, options);
     },
@@ -312,8 +312,8 @@ function setupExample(feather, element) {
       var $iframe = $(this.editor).find(".preview iframe");
 
       function update() {
-          var html = codemirror.doc.getValue();
-          $iframe.attr("srcdoc", html);
+        var html = codemirror.doc.getValue();
+        $iframe.attr("srcdoc", html);
       }
       codemirror.on("change", update);
       update();
@@ -323,7 +323,7 @@ function setupExample(feather, element) {
       var $iframe = $(this.editor).find(".preview iframe");
 
       function update(output) {
-          $iframe.attr("srcdoc", output);
+        $iframe.attr("srcdoc", output);
       }
       this.outputHooks.push(update);
     },
@@ -348,7 +348,7 @@ function setupExample(feather, element) {
     },
 
     getHeaders() {
-      var headers = {...this.options.headers};
+      var headers = { ...this.options.headers };
 
       if (Object.keys(this.options.env).length) {
         headers['X-FEATHER-ENV'] = editor.getEnvHeader();
@@ -365,13 +365,13 @@ function setupExample(feather, element) {
 
       var editor = this;
 
-      $(this.editor).find(".run").on('click', function() {
+      $(this.editor).find(".run").on('click', function () {
         var mode = $(this).data("mode") || "exec";
         var body;
 
         if (editor.options.multifile) {
           body = new FormData();
-          for (var i=0; i < editor.buffers.length; i++) {
+          for (var i = 0; i < editor.buffers.length; i++) {
             var buf = editor.buffers[i];
             var blob = new Blob([buf.doc.getValue()]);
             body.append(buf.name, blob, buf.name);
@@ -413,10 +413,10 @@ function setupExample(feather, element) {
         $(editor).find(target).show();
       }
 
-      $(function() {
+      $(function () {
         updateTabs();
 
-        $(editor).find(".tab-link").click(function() {
+        $(editor).find(".tab-link").click(function () {
           $(this).parent().find(".tab-link").removeClass("active");
           $(this).addClass("active");
           updateTabs();
@@ -425,7 +425,7 @@ function setupExample(feather, element) {
     },
     setupFileTabs() {
       var that = this;
-      $(this.editor).find(".filenames").on('click', '.file-link', function() {
+      $(this.editor).find(".filenames").on('click', '.file-link', function () {
         var name = $(this).html();
         that.selectBuffer(name);
         $(this).parent().find(".file-link").removeClass("active");
@@ -450,10 +450,10 @@ function setupExample(feather, element) {
     },
 
     showOutput(output) {
-      $(this.editor).find(".output-wrapper").show();
+      $(this.editor).find(".output-wrapper .output").show();
       this.options.renderOutput(this.editor, output);
 
-      for (var i=0; i < this.outputHooks.length; i++) {
+      for (var i = 0; i < this.outputHooks.length; i++) {
         this.outputHooks[i](output);
       }
     },
@@ -467,19 +467,27 @@ function setupExample(feather, element) {
     },
 
     clearOutput() {
-      $(this.editor).find(".output-wrapper").hide();
+      $(this.editor).find(".output-wrapper .output").hide();
       $(this.editor).find(".output").text("");
 
-      for (var i=0; i < this.outputHooks.length; i++) {
+      for (var i = 0; i < this.outputHooks.length; i++) {
         this.outputHooks[i]("");
       }
+    },
+
+    showSpinner() {
+      $(this.editor).find(".output-wrapper .spinner").show();
+    },
+
+    hideSpinner() {
+      $(this.editor).find(".output-wrapper .spinner").hide();
     },
 
     // extra run buttons specified in course.js
     addRunButtons() {
       var buttons = this.options.buttons;
 
-      for (var i=0; i<buttons.length; i++) {
+      for (var i = 0; i < buttons.length; i++) {
         var b = buttons[i];
         $("<button></button>")
           .addClass("run")
@@ -528,7 +536,7 @@ var feather = {
   getOptions(language) {
     var defaults = this.defaultOptions[language] || {};
     var options = this.options[language] || {};
-     return {...defaults, ...options}
+    return { ...defaults, ...options }
   },
 
   addRunButton(options) {
@@ -541,7 +549,7 @@ var feather = {
       console.log("feature_config is not setup. Livecode functionality may not work.");
     }
 
-    $(function() {
+    $(function () {
       $("pre.feather").each((i, e) => {
         var editor = setupExample(feather, e);
         feather.editors.push(editor);
